@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useQuiz } from '@/context/QuizContext';
 import { ShoppingBag, ThumbsUp, ThumbsDown, RotateCcw, Loader2, Share2, Zap, Home, DollarSign, Sparkles } from 'lucide-react';
@@ -13,11 +13,12 @@ const MOCK_PRODUCTS = [
 ];
 
 export default function ResultCard() {
-  const { selectedCategory, physicalConstraints, saveSessionToDb, submitFeedback, resetSession } = useQuiz();
+  const { selectedCategory, physicalConstraints, submitFeedback, resetSession, personalityScores } = useQuiz();
   const [feedbackScore, setFeedbackScore] = useState<number | null>(null);
   const [matchedBreed, setMatchedBreed] = useState<PetBreed | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const isSaved = useRef(false);
 
   useEffect(() => {
     // If no category selected (user refreshed or direct access), go home
@@ -35,11 +36,31 @@ export default function ResultCard() {
         const match = findBestMatch(selectedCategory, physicalConstraints);
         setMatchedBreed(match);
         setLoading(false);
-        saveSessionToDb();
+        
+        // Save to Database via API
+        if (!isSaved.current) {
+          isSaved.current = true;
+          try {
+            await fetch('/api/save-journey', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                personalityScores,
+                constraints: physicalConstraints,
+                decisionPath: selectedCategory,
+                recommendedResult: match,
+              }),
+            });
+          } catch (error) {
+            console.error('Error saving journey:', error);
+          }
+        }
       }
     }
     fetchMatches();
-  }, [selectedCategory, physicalConstraints, saveSessionToDb, router]);
+  }, [selectedCategory, physicalConstraints, personalityScores, router]);
 
   if (!selectedCategory) return null;
 
