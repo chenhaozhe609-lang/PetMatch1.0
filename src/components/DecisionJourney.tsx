@@ -167,7 +167,7 @@ export default function DecisionJourney() {
             </h2>
 
             <div className="space-y-4">
-              {currentNode.options.map((option: { nextId: string | undefined; outcome: string | undefined; label: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, idx: React.Key | null | undefined) => (
+              {currentNode.options.map((option, idx) => (
                 <motion.button
                   key={idx}
                   initial={{ backgroundColor: '#fafaf9', color: '#4A4A4A' }}

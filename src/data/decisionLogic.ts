@@ -1,4 +1,17 @@
-import { DecisionNode } from './decisionLogic';
+// ❌ 删除这一行 (Delete this line):
+// import { DecisionNode } from './decisionLogic'; 
+
+// ✅ 确保这里直接定义了接口 (Ensure the Interface is defined right here):
+export interface DecisionNode {
+  id: string;
+  question: string;
+  options: {
+    label: string;
+    nextId?: string; // 指向下一个节点的 ID
+    outcome?: string; // 如果是叶子节点，这里存放结果（如 'Dog'）
+  }[];
+}
+
 
 // Full Logic Decision Tree based on the flowchart
 export const decisionTree: Record<string, DecisionNode> = {
