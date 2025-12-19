@@ -1,0 +1,26 @@
+import { QuizProvider } from '@/context/QuizContext';
+import ClientWrapper from '@/components/ClientWrapper';
+import { personalityQuestions } from '@/data/questions';
+
+export default function MatchPage() {
+  const questions = personalityQuestions;
+
+  return (
+    <QuizProvider>
+      <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-4xl">
+          <header className="text-center mb-10">
+            <h1 className="text-4xl font-extrabold text-gray-900 mb-2">
+              Find Your Perfect Pet Match
+            </h1>
+            <p className="text-lg text-gray-600">
+              Let's get to know you first. Answer a few quick questions!
+            </p>
+          </header>
+
+          <ClientWrapper questions={questions} />
+        </div>
+      </main>
+    </QuizProvider>
+  );
+}
