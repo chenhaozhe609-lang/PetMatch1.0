@@ -1,6 +1,8 @@
 import ResultCard from '@/components/ResultCard';
+import LoadingOverlay from '@/components/LoadingOverlay';
 import { Metadata } from 'next';
 import { getBreedById } from '@/lib/recommendationEngine';
+import { Suspense } from 'react';
 
 type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -33,7 +35,9 @@ export default function ResultPage() {
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-5xl">
-        <ResultCard />
+        <Suspense fallback={<LoadingOverlay />}>
+          <ResultCard />
+        </Suspense>
       </div>
     </main>
   );
