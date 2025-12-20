@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, Variants } from 'framer-motion';
-import { Heart, Brain, ArrowRight, Home, Dog, Cat } from 'lucide-react';
+import { Heart, Brain, ArrowRight, Home, Dog, Cat, Sparkles, CheckCircle, HelpCircle, ChevronDown } from 'lucide-react';
 import { useQuiz } from '@/context/QuizContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -144,40 +144,131 @@ export default function LandingPage() {
           </motion.div>
         </motion.div>
 
-        {/* Feature Cards */}
-        <motion.div 
+        {/* Section 1: How it Works */}
+        <motion.section 
           initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.8 }}
-          className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4 w-full"
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mt-32 max-w-6xl mx-auto px-4 w-full"
         >
-          {/* Card 1 */}
-          <div className="bg-white p-10 rounded-[2rem] shadow-lg border border-gray-50 hover:shadow-xl transition-all hover:-translate-y-1">
-            <div className="bg-blue-50 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-blue-500 mb-6 mx-auto">
-              <Brain size={32} />
-            </div>
-            <h3 className="text-2xl font-bold text-foreground mb-4 font-heading">Personality First</h3>
-            <p className="text-muted leading-relaxed">We use the Big Five model to match your vibe with your future pet's energy.</p>
+          <div className="text-center mb-16">
+             <span className="bg-primary/10 text-primary font-bold px-4 py-2 rounded-full text-sm uppercase tracking-wider mb-4 inline-block">Process</span>
+             <h2 className="text-3xl md:text-5xl font-extrabold text-foreground font-heading">Finding your soulmate is science, not luck.</h2>
           </div>
 
-          {/* Card 2 */}
-          <div className="bg-white p-10 rounded-[2rem] shadow-lg border border-gray-50 hover:shadow-xl transition-all hover:-translate-y-1">
-            <div className="bg-green-50 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-primary mb-6 mx-auto">
-              <Home size={32} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Card 1 */}
+            <div className="bg-white p-10 rounded-[2rem] shadow-lg border border-stone-50 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="bg-blue-50 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-blue-500 mb-6 mx-auto">
+                <Brain size={32} />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4 font-heading">The Psychology</h3>
+              <p className="text-muted leading-relaxed">We analyze your Big 5 Personality traits to understand your emotional needs.</p>
             </div>
-            <h3 className="text-2xl font-bold text-foreground mb-4 font-heading">Reality Check</h3>
-            <p className="text-muted leading-relaxed">We ensure your new friend fits your budget, living space, and daily schedule.</p>
+
+            {/* Card 2 */}
+            <div className="bg-white p-10 rounded-[2rem] shadow-lg border border-stone-50 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="bg-green-50 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-primary mb-6 mx-auto">
+                <Home size={32} />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4 font-heading">The Lifestyle</h3>
+              <p className="text-muted leading-relaxed">We cross-reference your budget, space, and free time with 50+ breeds.</p>
+            </div>
+
+            {/* Card 3 */}
+            <div className="bg-white p-10 rounded-[2rem] shadow-lg border border-stone-50 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="bg-orange-50 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-secondary mb-6 mx-auto">
+                <Sparkles size={32} />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-4 font-heading">The Match</h3>
+              <p className="text-muted leading-relaxed">Our AI algorithm finds the pet that fits your soul and your life.</p>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Section 2: Why Choose SoulmatePaw? */}
+        <motion.section 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mt-32 w-full bg-[#E8EFE9] py-24 px-6 rounded-[3rem]"
+        >
+           <div className="max-w-4xl mx-auto text-center">
+             <span className="bg-white text-primary font-bold px-4 py-2 rounded-full text-sm uppercase tracking-wider mb-6 inline-block shadow-sm">Our Mission</span>
+             <h2 className="text-3xl md:text-5xl font-extrabold text-foreground font-heading mb-8">More than just a cute face.</h2>
+             <p className="text-xl md:text-2xl text-foreground/80 leading-relaxed font-light mb-10">
+               We don't just recommend popular breeds. We find compatible companions. 
+               Too many pets are returned because of lifestyle mismatches. 
+               <br/><br/>
+               <span className="font-bold text-primary">Stop rehoming pets. Start finding the one that stays.</span>
+             </p>
+             <div className="flex flex-col md:flex-row justify-center gap-6 text-left">
+                <div className="flex items-center gap-3 bg-white/60 p-4 rounded-xl">
+                  <CheckCircle className="text-primary" /> <span>Science-backed matching</span>
+                </div>
+                <div className="flex items-center gap-3 bg-white/60 p-4 rounded-xl">
+                  <CheckCircle className="text-primary" /> <span>Focus on long-term happiness</span>
+                </div>
+             </div>
+           </div>
+        </motion.section>
+
+        {/* Section 3: FAQ */}
+        <motion.section 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="mt-32 max-w-4xl mx-auto px-6 w-full mb-20"
+        >
+          <div className="text-center mb-16">
+             <h2 className="text-3xl md:text-4xl font-extrabold text-foreground font-heading mb-4">Frequently Asked Questions</h2>
+             <p className="text-muted">Everything you need to know about finding your pet soulmate.</p>
           </div>
 
-          {/* Card 3 */}
-          <div className="bg-white p-10 rounded-[2rem] shadow-lg border border-gray-50 hover:shadow-xl transition-all hover:-translate-y-1">
-            <div className="bg-orange-50 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-secondary mb-6 mx-auto">
-              <Dog size={32} />
-            </div>
-            <h3 className="text-2xl font-bold text-foreground mb-4 font-heading">Breed Specifics</h3>
-            <p className="text-muted leading-relaxed">Get detailed recommendations for specific breeds, not just generic categories.</p>
+          <div className="space-y-4">
+             {/* FAQ Item 1 */}
+             <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
+               <details className="group p-6 cursor-pointer">
+                 <summary className="flex justify-between items-center font-bold text-lg text-foreground list-none">
+                   Is this personality test accurate?
+                   <ChevronDown className="text-muted group-open:rotate-180 transition-transform" />
+                 </summary>
+                 <p className="text-muted mt-4 leading-relaxed">
+                   Yes! Our quiz is based on the OCEAN (Big 5) psychological model, which is widely used in psychology to understand personality traits. We map these traits to breed characteristics for a scientifically grounded match.
+                 </p>
+               </details>
+             </div>
+
+             {/* FAQ Item 2 */}
+             <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
+               <details className="group p-6 cursor-pointer">
+                 <summary className="flex justify-between items-center font-bold text-lg text-foreground list-none">
+                   I live in a small apartment, can I get a dog?
+                   <ChevronDown className="text-muted group-open:rotate-180 transition-transform" />
+                 </summary>
+                 <p className="text-muted mt-4 leading-relaxed">
+                   Yes! We filter specifically for apartment-friendly breeds that thrive in smaller spaces. Size isn't the only factor—energy level matters too. We'll find you a low-energy or adaptable companion.
+                 </p>
+               </details>
+             </div>
+
+             {/* FAQ Item 3 */}
+             <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
+               <details className="group p-6 cursor-pointer">
+                 <summary className="flex justify-between items-center font-bold text-lg text-foreground list-none">
+                   Do you support adoption?
+                   <ChevronDown className="text-muted group-open:rotate-180 transition-transform" />
+                 </summary>
+                 <p className="text-muted mt-4 leading-relaxed">
+                   Absolutely. We encourage checking local shelters for your matched breed or similar mixes. Many purebreds and specific mixes are waiting for homes in rescues right now.
+                 </p>
+               </details>
+             </div>
           </div>
-        </motion.div>
+        </motion.section>
       </main>
 
       {/* Footer */}
