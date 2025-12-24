@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Dog, Cat, Sparkles, Copy, Check, ArrowLeft } from 'lucide-react';
+import { Dog, Cat, Sparkles, Copy, Check, ArrowLeft, Tag } from 'lucide-react';
 import Link from 'next/link';
 
 interface GeneratedName {
@@ -113,6 +113,9 @@ export default function NameGeneratorPage() {
                   <NameCard key={index} result={result} index={index} />
                 ))}
               </div>
+
+              {/* Amazon CTA: Make it Official */}
+              <AmazonTagCTA petType={petType} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -268,6 +271,44 @@ function NameCard({ result, index }: { result: GeneratedName; index: number }) {
           {copied ? <Check size={20} /> : <Copy size={20} />}
         </button>
       </div>
+    </motion.div>
+  );
+}
+
+function AmazonTagCTA({ petType }: { petType: 'dog' | 'cat' }) {
+  const getSearchTerm = () => {
+    if (petType === 'dog') return 'custom+dog+tags+engraved';
+    if (petType === 'cat') return 'custom+cat+collar+with+name';
+    return 'custom+pet+id+tags';
+  };
+
+  const searchTerm = getSearchTerm();
+  const amazonLink = `https://www.amazon.com/s?k=${searchTerm}&tag=soulmatepaw01-20`;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.5 }}
+      className="mt-8 flex justify-center"
+    >
+      <a 
+        href={amazonLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group flex items-center gap-4 bg-amber-50 border border-amber-200 rounded-full py-3 px-6 hover:shadow-md transition-all hover:bg-amber-100 max-w-lg w-full sm:w-auto"
+      >
+        <div className="bg-amber-100 p-2 rounded-full text-amber-600 group-hover:scale-110 transition-transform flex-shrink-0">
+          <Tag size={20} />
+        </div>
+        <div className="flex-1 text-left">
+           <h4 className="font-bold text-amber-900 text-sm md:text-base leading-tight">Love one of these names? Make it official!</h4>
+           <p className="text-amber-700 text-xs md:text-sm">Get a custom engraved tag for your new friend.</p>
+        </div>
+        <div className="text-amber-600 font-bold text-sm flex items-center gap-1 group-hover:translate-x-1 transition-transform whitespace-nowrap">
+           Customize <span className="hidden sm:inline">on Amazon</span> ➔
+        </div>
+      </a>
     </motion.div>
   );
 }
