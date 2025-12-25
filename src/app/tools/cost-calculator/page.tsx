@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import CostCalculator from '@/components/tools/CostCalculator';
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 export const metadata: Metadata = {
   title: "Pet Cost Calculator: True Cost of Ownership | SoulmatePaw",
@@ -46,7 +47,9 @@ export default function CostCalculatorPage() {
 
       {/* --- Calculator Section --- */}
       <section className="py-12 px-4 sm:px-6">
-        <CostCalculator />
+        <Suspense fallback={<LoadingOverlay />}>
+          <CostCalculator />
+        </Suspense>
       </section>
 
       {/* --- Disclaimer Footer --- */}
