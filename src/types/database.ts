@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface TraitQuestion {
   id: number;
   question_text: string;
@@ -28,6 +30,7 @@ export interface UserSession {
 }
 
 export interface PetBreed {
+  description: ReactNode;
   id: string;
   category: string;
   breed_name: string;
@@ -36,6 +39,11 @@ export interface PetBreed {
   budget_tier: 'low' | 'medium' | 'high';
   time_commitment: 'low' | 'medium' | 'high';
   image_url: string | null;
+  // New SEO Columns
+  trainability?: 'low' | 'medium' | 'high';
+  family_friendly?: boolean;
+  shedding?: 'none' | 'low' | 'medium' | 'high';
+  
   is_compromise?: boolean; // Client-side flag
 }
 
