@@ -47,7 +47,8 @@ export default async function SeoCategoryPage({ params }: Props) {
   // Fetch breeds based on category
   let query = supabase
     .from('pet_breeds')
-    .select('id, breed_name, category, image_url, min_space, trainability, family_friendly, budget_tier, shedding, description');
+    // Removing references to non-existent columns (trainability, family_friendly, shedding) to fix build error
+    .select('id, breed_name, category, image_url, min_space, budget_tier, description');
 
   query = applyCategoryFilters(query, resolvedParams.category);
   

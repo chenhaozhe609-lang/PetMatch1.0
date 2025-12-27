@@ -5,6 +5,7 @@ import CostCalculator from '@/components/tools/CostCalculator';
 import { PetSize } from '@/types/calculator';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { Suspense } from 'react';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -128,12 +129,18 @@ export default async function CostPage({ params }: Props) {
             </p>
         </div>
 
-        <CostCalculator 
-          initialBreed={{
-            name: breed.breed_name,
-            size: mappedSize
-          }}
-        />
+        <Suspense fallback={
+          <div className="w-full h-[400px] bg-white rounded-3xl animate-pulse flex items-center justify-center text-stone-300">
+            Loading Calculator...
+          </div>
+        }>
+          <CostCalculator 
+            initialBreed={{
+              name: breed.breed_name,
+              size: mappedSize
+            }}
+          />
+        </Suspense>
 
         {/* SEO Content Injection */}
         <div className="mt-16 bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-stone-100">
