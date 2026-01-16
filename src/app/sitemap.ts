@@ -30,35 +30,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/animunity`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/breeds`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
   ];
 
-  // 2. Fetch Dynamic Routes from Supabase
+  // 2. Fetch Dynamic Routes from Supabase for Cost Calculator only
   const { data: breeds } = await supabase
     .from('pet_breeds')
     .select('breed_name');
 
   // Helper to generate slug
   const toSlug = (name: string) => name.toLowerCase().replace(/\s+/g, '-');
-
-  // Breed Details Pages
-  const breedRoutes: MetadataRoute.Sitemap = (breeds || []).map((breed) => ({
-    url: `${baseUrl}/breed/${toSlug(breed.breed_name)}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly',
-    priority: 0.6,
-  }));
 
   // Cost Calculator Pages (Programmatic SEO)
   const costRoutes: MetadataRoute.Sitemap = (breeds || []).map((breed) => ({
@@ -69,5 +49,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 3. Merge and Return
-  return [...staticRoutes, ...breedRoutes, ...costRoutes];
+  return [...staticRoutes, ...costRoutes];
 }

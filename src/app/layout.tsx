@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Nunito } from "next/font/google"; 
+import { Inter, Nunito } from "next/font/google";
 import "./globals.css";
 import { QuizProvider } from "@/context/QuizContext";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 });
@@ -33,6 +33,10 @@ export const metadata: Metadata = {
   verification: {
     google: 'bQYhmhmc7qXGSLkBOx2SQDNNht6ijkSGlHZbnE3TCcI',
   },
+  metadataBase: new URL('https://soulmatepaw.com'),
+  alternates: {
+    canonical: './',
+  },
 };
 
 export default function RootLayout({
@@ -40,9 +44,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'SoulmatePaw',
+    url: 'https://soulmatepaw.com',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://soulmatepaw.com/search?q={search_term_string}',
+      'query-input': 'required name=search_term_string'
+    }
+  };
+
   return (
     <html lang="en">
       <body className={`${inter.variable} ${nunito.variable} antialiased min-h-screen flex flex-col`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <QuizProvider>
           <Navbar />
           <div className="flex-grow w-full pt-20">

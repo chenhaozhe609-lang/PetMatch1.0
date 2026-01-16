@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Heart, Brain, Home, Sparkles, CheckCircle, ChevronDown, Users, MessageCircleHeart, DollarSign } from 'lucide-react';
+import { Heart, Brain, Home, Sparkles, CheckCircle, ChevronDown, Users, DollarSign } from 'lucide-react';
 import { useQuiz } from '@/context/QuizContext';
 import { useRouter } from 'next/navigation';
 import { BentoGrid } from '@/components/home/BentoGrid';
@@ -21,7 +21,7 @@ export default function LandingPage() {
 
   return (
     <main className="flex-grow flex flex-col items-center px-6 pb-20 relative overflow-hidden">
-        
+
       {/* Soft Gradient Background Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FDFCF8] to-[#F0F4F2] -z-10"></div>
 
@@ -29,98 +29,94 @@ export default function LandingPage() {
       <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-secondary/10 rounded-full blur-[100px] -z-10 animate-pulse"></div>
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[80px] -z-10"></div>
 
-      {/* Bento Grid Hero */}
-      <div className="w-full max-w-7xl mx-auto pt-10 pb-24">
-          <div className="mb-12 text-center md:text-left">
-                <h1 className="text-4xl md:text-6xl font-extrabold text-foreground tracking-tight leading-tight font-heading mb-4">
-                  Find your <span className="text-primary">Soulmate</span>. <br/>
-                  <span className="text-secondary/80 text-3xl md:text-5xl">Live better together.</span>
-                </h1>
-                <p className="text-lg text-muted max-w-2xl">
-                  AI-powered tools to help you find, name, and care for your perfect companion.
-                </p>
-          </div>
+      {/* Hero Section (Centered & Focused) */}
+      <section className="w-full max-w-5xl mx-auto pt-20 pb-32 flex flex-col items-center text-center z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight leading-tight font-heading mb-8">
+            Find your <span className="text-primary relative inline-block">
+              Soulmate
+              <svg className="absolute w-full h-3 -bottom-1 left-0 text-primary/30 -z-10" viewBox="0 0 100 10" preserveAspectRatio="none">
+                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="8" fill="none" />
+              </svg>
+            </span>.
+            <br className="hidden md:block" />
+            <span className="text-secondary/80 text-3xl md:text-6xl block mt-4">Live better together.</span>
+          </h1>
 
-          <BentoGrid>
-            {/* 1. Soulmate Matcher (Right Side Desktop / First Mobile) */}
-            <BentoCard
-              title="Soulmate Matcher"
-              description="Find the pet that truly understands you. Based on psychology & lifestyle."
-              icon={<Heart size={24} className="text-secondary" />} 
-              href="/match"
-              cta="Start Quiz"
-              className="lg:col-start-3 lg:col-span-2 lg:row-start-1 lg:row-span-2 min-h-[320px] text-white"
-              background={
-                <div className="absolute inset-0 bg-gradient-to-br from-[#E6B89C] to-[#D9A588] flex items-center justify-center overflow-hidden">
-                    <Heart size={300} className="absolute -bottom-20 -right-20 text-white/20 rotate-12" />
-                    <div className="absolute inset-0 bg-black/10"></div>
+          <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto mb-10 leading-relaxed">
+            AI-powered tools to help you find, name, and care for your perfect companion.
+            <br className="hidden md:block" /> No more guessing. Just science and love.
+          </p>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleStartQuiz()}
+            className="bg-primary text-white text-xl font-bold py-4 px-12 rounded-full shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all flex items-center gap-3 mx-auto"
+          >
+            <Heart fill="currentColor" size={24} />
+            Start Matching
+          </motion.button>
+
+          <p className="text-sm text-stone-400 mt-4 font-medium tracking-wide">
+            Takes 2 minutes • 100% Free • No Login Required
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Tools & Resources Section */}
+      <section className="w-full max-w-7xl mx-auto pb-24 px-4">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="h-[1px] bg-stone-200 flex-grow"></div>
+          <span className="text-stone-400 text-sm font-bold uppercase tracking-widest">More Tools</span>
+          <div className="h-[1px] bg-stone-200 flex-grow"></div>
+        </div>
+
+        <BentoGrid>
+          {/* 1. AI Name Generator */}
+          <BentoCard
+            title="AI Naming"
+            description="Unique, creative names generated by AI based on personality."
+            icon={<Sparkles size={24} className="text-secondary" />}
+            href="/tools/name-generator"
+            cta="Try Generator"
+            className="md:col-span-2 min-h-[220px]"
+            background={
+              <div className="absolute inset-0 bg-stone-50 overflow-hidden opacity-40 flex flex-col items-center justify-center gap-2 p-4 mask-linear-fade">
+                <div className="flex gap-4 opacity-50">
+                  <span className="text-2xl font-handwriting -rotate-6">Luna</span>
+                  <span className="text-3xl font-bold text-stone-300">Coco</span>
+                  <span className="text-xl rotate-12">Max</span>
                 </div>
-              }
-            />
+              </div>
+            }
+          />
 
-            {/* 2. AI Name Generator (Left Side Vertical / Second Mobile) */}
-            <BentoCard
-              title="AI Naming"
-              description="Unique names generated by AI."
-              icon={<Sparkles size={24} className="text-secondary" />}
-              href="/tools/name-generator"
-              className="lg:col-start-1 lg:col-span-1 lg:row-start-1 lg:row-span-2 min-h-[320px]"
-              background={
-                <div className="absolute inset-0 bg-stone-50 overflow-hidden opacity-40 flex flex-col items-center justify-center gap-2 p-4 mask-linear-fade">
-                    <div className="flex flex-col gap-4 text-center animate-infinite-scroll">
-                        <span className="text-xs font-mono text-stone-400">"Luna"</span>
-                        <span className="text-sm font-mono text-stone-500">"Cooper"</span>
-                        <span className="text-xs font-mono text-stone-400">"Mochi"</span>
-                        <span className="text-lg font-mono text-stone-600 font-bold">"Bear"</span>
-                        <span className="text-xs font-mono text-stone-400">"Willow"</span>
-                        <span className="text-sm font-mono text-stone-500">"Oliver"</span>
-                        <span className="text-xs font-mono text-stone-400">"Leo"</span>
-                        <span className="text-lg font-mono text-stone-600 font-bold">"Bella"</span>
-                        <span className="text-xs font-mono text-stone-400">"Charlie"</span>
-                         {/* Duplicate for seamless loop */}
-                        <span className="text-xs font-mono text-stone-400">"Luna"</span>
-                        <span className="text-sm font-mono text-stone-500">"Cooper"</span>
-                        <span className="text-xs font-mono text-stone-400">"Mochi"</span>
-                        <span className="text-lg font-mono text-stone-600 font-bold">"Bear"</span>
-                        <span className="text-xs font-mono text-stone-400">"Willow"</span>
-                    </div>
-                </div>
-              }
-            />
+          {/* 2. Cost Calculator */}
+          <BentoCard
+            title="Cost Calculator"
+            description="Plan your budget accurately."
+            icon={<DollarSign size={24} className="text-primary" />}
+            href="/tools/cost-calculator"
+            cta="Calculate"
+            className="md:col-span-1 min-h-[220px]"
+            background={
+              <div className="absolute -right-4 -bottom-4 opacity-10 text-primary">
+                <DollarSign size={100} />
+              </div>
+            }
+          />
 
-            {/* 3. Cost Calculator (Center Top / Third Mobile) */}
-            <BentoCard
-              title="Cost Calculator"
-              description="Budget for your new friend."
-              icon={<DollarSign size={24} className="text-primary" />}
-              href="/tools/cost-calculator"
-              className="lg:col-start-2 lg:col-span-1 lg:row-start-1 lg:row-span-1 min-h-[180px]"
-              background={
-                  <div className="absolute -right-4 -bottom-4 opacity-10 text-primary">
-                      <DollarSign size={120}/>
-                  </div>
-              }
-            />
 
-            {/* 4. Animunity (Center Bottom / Fourth Mobile) */}
-            <BentoCard
-              title="Animunity"
-              description="Where Pet Lovers Communicate."
-              icon={<Users size={24} className="text-blue-500" />}
-              href="/animunity"
-              cta="Join"
-              className="lg:col-start-2 lg:col-span-1 lg:row-start-2 lg:row-span-1 min-h-[180px]"
-              background={
-                  <div className="absolute -right-4 -top-4 opacity-10 text-blue-500">
-                      <MessageCircleHeart size={120}/>
-                  </div>
-              }
-            />
-          </BentoGrid>
-      </div>
+        </BentoGrid>
+      </section>
 
       {/* Section 1: How it Works (Process) */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -128,8 +124,8 @@ export default function LandingPage() {
         className="mt-10 max-w-6xl mx-auto px-4 w-full"
       >
         <div className="text-center mb-16">
-            <span className="bg-primary/10 text-primary font-bold px-4 py-2 rounded-full text-sm uppercase tracking-wider mb-4 inline-block">Process</span>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-foreground font-heading">Finding your soulmate is science, not luck.</h2>
+          <span className="bg-primary/10 text-primary font-bold px-4 py-2 rounded-full text-sm uppercase tracking-wider mb-4 inline-block">Process</span>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-foreground font-heading">Finding your soulmate is science, not luck.</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -163,35 +159,35 @@ export default function LandingPage() {
       </motion.section>
 
       {/* Section 2: Why Choose SoulmatePaw? */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
         className="mt-32 w-full bg-[#E8EFE9] py-24 px-6 rounded-[3rem]"
       >
-          <div className="max-w-4xl mx-auto text-center">
-            <span className="bg-white text-primary font-bold px-4 py-2 rounded-full text-sm uppercase tracking-wider mb-6 inline-block shadow-sm">Our Mission</span>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-foreground font-heading mb-8">More than just a cute face.</h2>
-            <p className="text-xl md:text-2xl text-foreground/80 leading-relaxed font-light mb-10">
-              We don't just recommend popular breeds. We find compatible companions. 
-              Too many pets are returned because of lifestyle mismatches. 
-              <br/><br/>
-              <span className="font-bold text-primary">Stop rehoming pets. Start finding the one that stays.</span>
-            </p>
-            <div className="flex flex-col md:flex-row justify-center gap-6 text-left">
-              <div className="flex items-center gap-3 bg-white/60 p-4 rounded-xl">
-                <CheckCircle className="text-primary" /> <span>Science-backed matching</span>
-              </div>
-              <div className="flex items-center gap-3 bg-white/60 p-4 rounded-xl">
-                <CheckCircle className="text-primary" /> <span>Focus on long-term happiness</span>
-              </div>
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="bg-white text-primary font-bold px-4 py-2 rounded-full text-sm uppercase tracking-wider mb-6 inline-block shadow-sm">Our Mission</span>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-foreground font-heading mb-8">More than just a cute face.</h2>
+          <p className="text-xl md:text-2xl text-foreground/80 leading-relaxed font-light mb-10">
+            We don't just recommend popular breeds. We find compatible companions.
+            Too many pets are returned because of lifestyle mismatches.
+            <br /><br />
+            <span className="font-bold text-primary">Stop rehoming pets. Start finding the one that stays.</span>
+          </p>
+          <div className="flex flex-col md:flex-row justify-center gap-6 text-left">
+            <div className="flex items-center gap-3 bg-white/60 p-4 rounded-xl">
+              <CheckCircle className="text-primary" /> <span>Science-backed matching</span>
+            </div>
+            <div className="flex items-center gap-3 bg-white/60 p-4 rounded-xl">
+              <CheckCircle className="text-primary" /> <span>Focus on long-term happiness</span>
             </div>
           </div>
+        </div>
       </motion.section>
 
       {/* Section 3: FAQ */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -199,49 +195,49 @@ export default function LandingPage() {
         className="mt-32 max-w-4xl mx-auto px-6 w-full mb-20"
       >
         <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-foreground font-heading mb-4">Frequently Asked Questions</h2>
-            <p className="text-muted">Everything you need to know about finding your pet soulmate.</p>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground font-heading mb-4">Frequently Asked Questions</h2>
+          <p className="text-muted">Everything you need to know about finding your pet soulmate.</p>
         </div>
 
         <div className="space-y-4">
-            {/* FAQ Item 1 */}
-            <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
-              <details className="group p-6 cursor-pointer">
-                <summary className="flex justify-between items-center font-bold text-lg text-foreground list-none">
-                  Is this personality test accurate?
-                  <ChevronDown className="text-muted group-open:rotate-180 transition-transform" />
-                </summary>
-                <p className="text-muted mt-4 leading-relaxed">
-                  Yes! Our quiz is based on the OCEAN (Big 5) psychological model, which is widely used in psychology to understand personality traits. We map these traits to breed characteristics for a scientifically grounded match.
-                </p>
-              </details>
-            </div>
+          {/* FAQ Item 1 */}
+          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
+            <details className="group p-6 cursor-pointer">
+              <summary className="flex justify-between items-center font-bold text-lg text-foreground list-none">
+                Is this personality test accurate?
+                <ChevronDown className="text-muted group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-muted mt-4 leading-relaxed">
+                Yes! Our quiz is based on the OCEAN (Big 5) psychological model, which is widely used in psychology to understand personality traits. We map these traits to breed characteristics for a scientifically grounded match.
+              </p>
+            </details>
+          </div>
 
-            {/* FAQ Item 2 */}
-            <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
-              <details className="group p-6 cursor-pointer">
-                <summary className="flex justify-between items-center font-bold text-lg text-foreground list-none">
-                  I live in a small apartment, can I get a dog?
-                  <ChevronDown className="text-muted group-open:rotate-180 transition-transform" />
-                </summary>
-                <p className="text-muted mt-4 leading-relaxed">
-                  Yes! We filter specifically for apartment-friendly breeds that thrive in smaller spaces. Size isn't the only factor—energy level matters too. We'll find you a low-energy or adaptable companion.
-                </p>
-              </details>
-            </div>
+          {/* FAQ Item 2 */}
+          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
+            <details className="group p-6 cursor-pointer">
+              <summary className="flex justify-between items-center font-bold text-lg text-foreground list-none">
+                I live in a small apartment, can I get a dog?
+                <ChevronDown className="text-muted group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-muted mt-4 leading-relaxed">
+                Yes! We filter specifically for apartment-friendly breeds that thrive in smaller spaces. Size isn't the only factor—energy level matters too. We'll find you a low-energy or adaptable companion.
+              </p>
+            </details>
+          </div>
 
-            {/* FAQ Item 3 */}
-            <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
-              <details className="group p-6 cursor-pointer">
-                <summary className="flex justify-between items-center font-bold text-lg text-foreground list-none">
-                  Do you support adoption?
-                  <ChevronDown className="text-muted group-open:rotate-180 transition-transform" />
-                </summary>
-                <p className="text-muted mt-4 leading-relaxed">
-                  Absolutely. We encourage checking local shelters for your matched breed or similar mixes. Many purebreds and specific mixes are waiting for homes in rescues right now.
-                </p>
-              </details>
-            </div>
+          {/* FAQ Item 3 */}
+          <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden group">
+            <details className="group p-6 cursor-pointer">
+              <summary className="flex justify-between items-center font-bold text-lg text-foreground list-none">
+                Do you support adoption?
+                <ChevronDown className="text-muted group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-muted mt-4 leading-relaxed">
+                Absolutely. We encourage checking local shelters for your matched breed or similar mixes. Many purebreds and specific mixes are waiting for homes in rescues right now.
+              </p>
+            </details>
+          </div>
         </div>
       </motion.section>
     </main>

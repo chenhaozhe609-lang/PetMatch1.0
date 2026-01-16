@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useQuiz } from '@/context/QuizContext';
-import { ShoppingBag, ThumbsUp, ThumbsDown, RotateCcw, Share2, Zap, Home, DollarSign, Sparkles, ExternalLink } from 'lucide-react';
+import { ShoppingBag, RotateCcw, Share2, Zap, Home, DollarSign, Sparkles, ExternalLink } from 'lucide-react';
 import { findBestMatch, PetBreed, getBreedById } from '@/lib/recommendationEngine';
 import { useRouter, useSearchParams } from 'next/navigation';
 import LoadingOverlay from './LoadingOverlay';
@@ -16,8 +16,7 @@ const MOCK_PRODUCTS = [
 ];
 
 export default function ResultCard() {
-  const { selectedCategory, physicalConstraints, submitFeedback, resetSession, personalityScores } = useQuiz();
-  const [feedbackScore, setFeedbackScore] = useState<number | null>(null);
+  const { selectedCategory, physicalConstraints, resetSession, personalityScores } = useQuiz();
   const [matchedBreed, setMatchedBreed] = useState<PetBreed | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -47,14 +46,15 @@ export default function ResultCard() {
         setLoading(true);
         // Simulate async delay for dramatic effect
         await new Promise(resolve => setTimeout(resolve, 3000));
-        
+
         try {
-          const match = await findBestMatch(selectedCategory, physicalConstraints);
+          // Pass personalityScores to the engine
+          const match = await findBestMatch(selectedCategory, physicalConstraints, personalityScores);
           setMatchedBreed(match);
-          
+
           // Update URL to include breed_id for sharing
           router.replace(`/result?breed_id=${match.id}`, { scroll: false });
-          
+
           // Save to Database via API
           if (!isSaved.current) {
             isSaved.current = true;
@@ -87,7 +87,7 @@ export default function ResultCard() {
         setLoading(false);
       }
     }
-    
+
     init();
   }, [breedId, selectedCategory, physicalConstraints, personalityScores, router]);
 
@@ -101,13 +101,10 @@ export default function ResultCard() {
   const bestMatch = matchedBreed;
 
   // Generate Dynamic "Why" Text
-  const whyItFits = bestMatch.whyItFits || 
+  const whyItFits = bestMatch.whyItFits ||
     `Since you live in an ${physicalConstraints?.space} and have ${physicalConstraints?.time} time, the ${bestMatch.name} is your ideal match!`;
 
-  const handleFeedback = (score: number) => {
-    setFeedbackScore(score);
-    submitFeedback(score);
-  };
+
 
   const handleStartOver = () => {
     resetSession();
@@ -121,7 +118,7 @@ export default function ResultCard() {
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-10"></div>
 
       {/* Header */}
-      <motion.div 
+      <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="text-center mb-8"
@@ -145,68 +142,75 @@ export default function ResultCard() {
           {/* Left: Image Area */}
           <div className="bg-stone-50 p-8 flex items-center justify-center relative overflow-hidden group min-h-[320px]">
             <div className="absolute inset-0 bg-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            
+
             {/* Placeholder for Pet Image */}
             <div className="flex flex-col items-center justify-center text-stone-300">
-               {bestMatch.imageUrl ? (
-                 <img src={bestMatch.imageUrl} alt={bestMatch.name} className="w-64 h-64 object-cover rounded-full shadow-lg" />
-               ) : (
-                 <>
-                   <div className="w-40 h-40 rounded-full border-4 border-dashed border-stone-200 flex items-center justify-center mb-4">
-                     <span className="text-4xl">🐾</span>
-                   </div>
-                   <p className="text-sm font-bold uppercase tracking-widest">Image Coming Soon</p>
-                 </>
-               )}
+              {bestMatch.imageUrl ? (
+                <img src={bestMatch.imageUrl} alt={bestMatch.name} className="w-64 h-64 object-cover rounded-full shadow-lg" />
+              ) : (
+                <>
+                  <div className="w-40 h-40 rounded-full border-4 border-dashed border-stone-200 flex items-center justify-center mb-4">
+                    <span className="text-4xl">🐾</span>
+                  </div>
+                  <p className="text-sm font-bold uppercase tracking-widest">Image Coming Soon</p>
+                </>
+              )}
             </div>
+            {/* Match Score Badge */}
+            {bestMatch.matchScore && (
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur shadow-lg rounded-full w-20 h-20 flex flex-col items-center justify-center border-4 border-secondary/20 animate-bounce-slow">
+                <span className="text-2xl font-black text-secondary">{bestMatch.matchScore}%</span>
+                <span className="text-[10px] uppercase font-bold text-muted">Match</span>
+              </div>
+            )}
           </div>
 
           {/* Right: Key Details */}
           <div className="p-8 md:p-12 flex flex-col justify-center text-left">
-             <div className="mb-6">
-                {bestMatch.isCompromise && (
-                  <span className="inline-block bg-yellow-100 text-yellow-800 font-bold px-4 py-1 rounded-full text-xs mb-3">
-                    Best Compromise
-                  </span>
-                )}
-                <span className="inline-block bg-primary/10 text-primary font-bold px-4 py-1 rounded-full text-sm mb-3 ml-2">
-                  {bestMatch.category}
+            <div className="mb-6">
+              {bestMatch.matchScore && bestMatch.matchScore < 80 && (
+                <span className="inline-block bg-yellow-100 text-yellow-800 font-bold px-4 py-1 rounded-full text-xs mb-3">
+                  Check Details
                 </span>
-                <h2 className="text-4xl md:text-5xl font-black text-foreground font-heading leading-tight mb-2">
-                  {bestMatch.name}
-                </h2>
-                <p className="text-xl text-secondary font-medium italic">
-                  "{bestMatch.description}"
-                </p>
-             </div>
+              )}
+              <span className="inline-block bg-primary/10 text-primary font-bold px-4 py-1 rounded-full text-sm mb-3 ml-2">
+                {bestMatch.category}
+              </span>
+              <h2 className="text-4xl md:text-5xl font-black text-foreground font-heading leading-tight mb-2">
+                {bestMatch.name}
+              </h2>
+              <p className="text-xl text-secondary font-medium italic">
+                "{bestMatch.description}"
+              </p>
+            </div>
 
-             {/* Compatibility Icons (Match Score) */}
-             <div className="flex gap-4 md:gap-6 mb-6">
-               <div className="flex flex-col items-center gap-2">
-                 <div className="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center">
-                   <Home size={20} />
-                 </div>
-                 <span className="text-xs font-bold text-muted uppercase tracking-wider">{bestMatch.tags.space}</span>
-               </div>
-               <div className="flex flex-col items-center gap-2">
-                 <div className="w-12 h-12 bg-yellow-50 text-yellow-500 rounded-xl flex items-center justify-center">
-                   <Zap size={20} />
-                 </div>
-                 <span className="text-xs font-bold text-muted uppercase tracking-wider">{bestMatch.tags.time} Time</span>
-               </div>
-               <div className="flex flex-col items-center gap-2">
-                 <div className="w-12 h-12 bg-green-50 text-green-500 rounded-xl flex items-center justify-center">
-                   <DollarSign size={20} />
-                 </div>
-                 <span className="text-xs font-bold text-muted uppercase tracking-wider">{bestMatch.tags.budget} Cost</span>
-               </div>
-             </div>
+            {/* Compatibility Icons (Match Score) */}
+            <div className="flex gap-4 md:gap-6 mb-6">
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center">
+                  <Home size={20} />
+                </div>
+                <span className="text-xs font-bold text-muted uppercase tracking-wider">{bestMatch.tags?.space || 'Any'}</span>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-12 h-12 bg-yellow-50 text-yellow-500 rounded-xl flex items-center justify-center">
+                  <Zap size={20} />
+                </div>
+                <span className="text-xs font-bold text-muted uppercase tracking-wider">{bestMatch.tags?.time || 'Medium'} Time</span>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-12 h-12 bg-green-50 text-green-500 rounded-xl flex items-center justify-center">
+                  <DollarSign size={20} />
+                </div>
+                <span className="text-xs font-bold text-muted uppercase tracking-wider">{bestMatch.tags?.budget || 'Medium'} Cost</span>
+              </div>
+            </div>
           </div>
         </div>
       </motion.div>
 
       {/* 2. Monetization Section (Moved Up) */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
@@ -215,35 +219,35 @@ export default function ResultCard() {
         <div className="bg-orange-50/50 p-8 rounded-[2rem] border border-orange-100 shadow-sm relative overflow-hidden">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-             <div className="text-left">
-                <h3 className="text-2xl font-bold text-foreground font-heading flex items-center gap-2">
-                  Get Ready for your {bestMatch.name} 🛍️
-                </h3>
-                <p className="text-muted text-sm md:text-base">
-                  Essentials you'll need for day one.
-                </p>
-             </div>
-             <motion.a 
-               href={`https://www.amazon.com/s?k=${encodeURIComponent(bestMatch.name + " starter kit")}&tag=soulmatepaw01-20`}
-               target="_blank"
-               rel="noopener noreferrer"
-               whileHover={{ scale: 1.05 }}
-               whileTap={{ scale: 0.95 }}
-               className="bg-[#FF9900] text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-[#E68A00] transition-colors flex items-center gap-2 text-sm md:text-base whitespace-nowrap"
-             >
-               Check Price on Amazon <ExternalLink size={16} />
-             </motion.a>
+            <div className="text-left">
+              <h3 className="text-2xl font-bold text-foreground font-heading flex items-center gap-2">
+                Get Ready for your {bestMatch.name} 🛍️
+              </h3>
+              <p className="text-muted text-sm md:text-base">
+                Essentials you'll need for day one.
+              </p>
+            </div>
+            <motion.a
+              href={`https://www.amazon.com/s?k=${encodeURIComponent(bestMatch.name + " starter kit")}&tag=soulmatepaw01-20`}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-[#FF9900] text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-[#E68A00] transition-colors flex items-center gap-2 text-sm md:text-base whitespace-nowrap"
+            >
+              Check Price on Amazon <ExternalLink size={16} />
+            </motion.a>
           </div>
 
           {/* Product Grid / Horizontal Scroll */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-             {MOCK_PRODUCTS.map((product, idx) => (
-               <div key={idx} className="bg-white p-4 rounded-xl border border-orange-100 shadow-sm flex flex-col items-center text-center">
-                  <div className="text-4xl mb-2">{product.image}</div>
-                  <p className="font-bold text-sm text-foreground mb-1">{product.name}</p>
-                  <p className="text-xs text-muted">{product.price}</p>
-               </div>
-             ))}
+            {MOCK_PRODUCTS.map((product, idx) => (
+              <div key={idx} className="bg-white p-4 rounded-xl border border-orange-100 shadow-sm flex flex-col items-center text-center">
+                <div className="text-4xl mb-2">{product.image}</div>
+                <p className="font-bold text-sm text-foreground mb-1">{product.name}</p>
+                <p className="text-xs text-muted">{product.price}</p>
+              </div>
+            ))}
           </div>
         </div>
       </motion.div>
@@ -255,33 +259,33 @@ export default function ResultCard() {
         transition={{ delay: 0.4 }}
         className="bg-white rounded-[2.5rem] shadow-xl overflow-hidden border border-stone-100 p-8 md:p-12 mb-10"
       >
-         <h3 className="text-2xl font-bold text-foreground font-heading mb-6">
-           Why {bestMatch.name} is your soulmate
-         </h3>
+        <h3 className="text-2xl font-bold text-foreground font-heading mb-6">
+          Why {bestMatch.name} is your soulmate
+        </h3>
 
-         {/* The "Why" Text */}
-         <div className="bg-stone-50 rounded-2xl p-6 mb-8 border border-stone-100">
-            <div className="flex items-start gap-3">
-              <Sparkles className="text-yellow-500 flex-shrink-0 mt-1" size={20} />
-              <p className="text-muted leading-relaxed">
-                {whyItFits}
-              </p>
-            </div>
-         </div>
+        {/* The "Why" Text */}
+        <div className="bg-stone-50 rounded-2xl p-6 mb-8 border border-stone-100">
+          <div className="flex items-start gap-3">
+            <Sparkles className="text-yellow-500 flex-shrink-0 mt-1" size={20} />
+            <p className="text-muted leading-relaxed">
+              {whyItFits}
+            </p>
+          </div>
+        </div>
 
-         {/* Share Button */}
-         <div className="flex gap-4">
-           <motion.button 
-             whileTap={{ scale: 0.95 }}
-             whileHover={{ scale: 1.05 }}
-             transition={{ type: "spring", stiffness: 500, damping: 15 }}
-             className="w-full md:w-auto px-8 bg-secondary text-white font-bold py-4 rounded-xl shadow-lg hover:bg-[#D9A588] transition-colors flex items-center justify-center gap-2"
-           >
-             <Share2 size={20} /> Share My Match
-           </motion.button>
-         </div>
+        {/* Share Button */}
+        <div className="flex gap-4">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 500, damping: 15 }}
+            className="w-full md:w-auto px-8 bg-secondary text-white font-bold py-4 rounded-xl shadow-lg hover:bg-[#D9A588] transition-colors flex items-center justify-center gap-2"
+          >
+            <Share2 size={20} /> Share My Match
+          </motion.button>
+        </div>
 
-          {/* Beta Notice */}
+        {/* Beta Notice */}
         <div className="mt-8 pt-6 border-t border-stone-100 text-center">
           <p className="text-sm text-muted">
             ℹ️ Breed database is in beta. More furry friends coming soon!
@@ -291,7 +295,7 @@ export default function ResultCard() {
 
       {/* Footer Actions */}
       <div className="text-center pb-10">
-        <motion.button 
+        <motion.button
           onClick={handleStartOver}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -300,32 +304,7 @@ export default function ResultCard() {
           <RotateCcw size={16} /> Start Over
         </motion.button>
 
-        {/* Feedback Section */}
-        <div className="mt-8 pt-8 border-t border-stone-200 max-w-md mx-auto">
-          <p className="text-sm text-muted mb-4">Was this match accurate?</p>
-          {feedbackScore === null ? (
-            <div className="flex justify-center gap-4">
-              <motion.button 
-                whileHover={{ scale: 1.2, rotate: -10 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => handleFeedback(1)} 
-                className="p-3 rounded-full bg-white shadow-sm border border-stone-200 hover:border-red-300 hover:text-red-500 transition-colors"
-              >
-                <ThumbsDown size={20} />
-              </motion.button>
-              <motion.button 
-                whileHover={{ scale: 1.2, rotate: 10 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => handleFeedback(5)} 
-                className="p-3 rounded-full bg-white shadow-sm border border-stone-200 hover:border-green-300 hover:text-green-500 transition-colors"
-              >
-                <ThumbsUp size={20} />
-              </motion.button>
-            </div>
-          ) : (
-            <span className="text-green-600 font-bold text-sm bg-green-50 px-3 py-1 rounded-full">Thanks for your feedback!</span>
-          )}
-        </div>
+
       </div>
     </div>
   );

@@ -22,16 +22,15 @@ interface QuizContextType extends QuizState {
 
   // Phase 2: Decision Journey
   setSelectedCategory: (category: string) => void;
-  
+
   // Phase 3: Physical Quiz
   setPhysicalAnswer: (questionId: string, value: string) => void;
   isPhysicalQuizCompleted: boolean;
   completePhysicalQuiz: () => void;
-  
+
   // General
   resetSession: () => void;
   saveSessionToDb: () => Promise<void>;
-  submitFeedback: (score: number) => Promise<void>;
   sessionId: string | null;
 }
 
@@ -41,12 +40,12 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
   // State
   const [personalityScores, setPersonalityScores] = useState<{ [trait: string]: number }>({});
   const [isPersonalityQuizCompleted, setIsPersonalityQuizCompleted] = useState(false);
-  
+
   const [selectedCategory, setSelectedCategoryState] = useState<string | null>(null);
-  
+
   const [physicalAnswers, setPhysicalAnswers] = useState<Record<string, string>>({});
   const [isPhysicalQuizCompleted, setIsPhysicalQuizCompleted] = useState(false);
-  
+
   const [sessionId, setSessionId] = useState<string | null>(null);
 
   // Computed Physical Constraints
@@ -101,7 +100,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
         .insert({
           trait_answers: personalityScores,
           path_taken: selectedCategory ? [{ category: selectedCategory }] : [], // Simplified path
-          recommended_pet: selectedCategory, 
+          recommended_pet: selectedCategory,
         })
         .select('id')
         .single();
@@ -116,17 +115,7 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const submitFeedback = async (score: number) => {
-    if (!sessionId) return;
-    try {
-      await supabase
-        .from('user_sessions')
-        .update({ user_feedback_score: score })
-        .eq('id', sessionId);
-    } catch (err) {
-      console.error('Error submitting feedback:', err);
-    }
-  };
+
 
   return (
     <QuizContext.Provider
@@ -134,20 +123,19 @@ export const QuizProvider = ({ children }: { children: ReactNode }) => {
         personalityScores,
         selectedCategory,
         physicalConstraints,
-        
+
         setPersonalityAnswer,
         isPersonalityQuizCompleted,
         completePersonalityQuiz,
-        
+
         setSelectedCategory,
-        
+
         setPhysicalAnswer,
         isPhysicalQuizCompleted,
         completePhysicalQuiz,
-        
+
         resetSession,
         saveSessionToDb,
-        submitFeedback,
         sessionId
       }}
     >

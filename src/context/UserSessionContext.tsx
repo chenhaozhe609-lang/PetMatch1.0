@@ -27,16 +27,15 @@ interface UserSessionContextType {
   isPhysicalQuizCompleted: boolean;
   completePhysicalQuiz: () => void;
   physicalConstraints: PhysicalConstraints;
-  
+
   // Phase 4: Final Result
   finalResult: string | null; // Specific Breed Name
   setFinalResult: (result: string) => void; // Used for breed matching
-  
+
   // Phase 4: Persistence & Feedback
   sessionId: string | null;
   saveSessionToDb: () => Promise<void>;
-  submitFeedback: (score: number) => Promise<void>;
-  
+
   // General
   resetSession: () => void;
 }
@@ -88,7 +87,7 @@ export const UserSessionProvider = ({ children }: { children: ReactNode }) => {
       ...prev,
       { nodeId: currentFlowId, choice: choiceLabel }
     ]);
-    
+
     // Move to next node
     setCurrentFlowId(nextNodeId);
   };
@@ -134,28 +133,7 @@ export const UserSessionProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Phase 4 Logic: Feedback
-  const submitFeedback = async (score: number) => {
-    if (!sessionId) {
-      console.warn('Cannot submit feedback: No session ID found.');
-      return;
-    }
 
-    try {
-      const { error } = await supabase
-        .from('user_sessions')
-        .update({ user_feedback_score: score })
-        .eq('id', sessionId);
-
-      if (error) {
-        console.error('Error submitting feedback:', error);
-      } else {
-        console.log('Feedback submitted successfully:', score);
-      }
-    } catch (err) {
-      console.error('Unexpected error submitting feedback:', err);
-    }
-  };
 
   const resetSession = () => {
     setPersonalityAnswers({});
@@ -175,23 +153,22 @@ export const UserSessionProvider = ({ children }: { children: ReactNode }) => {
         setPersonalityAnswer,
         isPersonalityQuizCompleted,
         completePersonalityQuiz,
-        
+
         currentFlowId,
         flowHistory,
         selectedCategory,
         handleFlowChoice,
         setSelectedCategory,
-        
+
         isPhysicalQuizCompleted,
         completePhysicalQuiz,
         physicalConstraints,
-        
+
         finalResult,
         setFinalResult,
-        
+
         sessionId,
         saveSessionToDb,
-        submitFeedback,
         resetSession,
       }}
     >

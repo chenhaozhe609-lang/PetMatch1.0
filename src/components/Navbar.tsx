@@ -4,16 +4,15 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Heart, 
-  Menu, 
-  X, 
-  ChevronDown, 
-  Sparkles, 
-  DollarSign, 
-  BookOpen, 
-  MessageCircleHeart, 
-  Search 
+import {
+  Heart,
+  Menu,
+  X,
+  ChevronDown,
+  Sparkles,
+  DollarSign,
+  BookOpen,
+  Search
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -42,8 +41,6 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Find Soulmate', href: '/match', icon: Heart, highlight: true },
-    { name: 'Breeds', href: '/breeds', icon: BookOpen },
-    { name: 'Community', href: '/animunity', icon: MessageCircleHeart },
   ];
 
   const toolsLinks = [
@@ -65,8 +62,8 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           {/* Find Soulmate */}
-          <Link 
-            href="/match" 
+          <Link
+            href="/match"
             className={cn(
               "text-sm font-bold transition-colors flex items-center gap-2",
               pathname === '/match' ? "text-primary" : "text-foreground hover:text-primary"
@@ -75,34 +72,25 @@ export default function Navbar() {
             Find Soulmate
           </Link>
 
-          {/* Breeds */}
-          <Link 
-            href="/breeds" 
-            className={cn(
-              "text-sm font-bold transition-colors",
-              pathname === '/breeds' ? "text-blue-500" : "text-foreground hover:text-blue-500"
-            )}
-          >
-            Breeds
-          </Link>
+
 
           {/* Tools Dropdown */}
-          <div 
-            className="relative" 
+          <div
+            className="relative"
             onMouseEnter={() => setIsToolsOpen(true)}
             onMouseLeave={() => setIsToolsOpen(false)}
             ref={dropdownRef}
           >
-            <button 
+            <button
               className={cn(
                 "flex items-center gap-1 text-sm font-bold transition-colors focus:outline-none py-2",
                 pathname.startsWith('/tools') || isToolsOpen ? "text-secondary" : "text-foreground hover:text-secondary"
               )}
             >
               Tools
-              <ChevronDown 
-                size={14} 
-                className={cn("transition-transform duration-200", isToolsOpen ? "rotate-180" : "")} 
+              <ChevronDown
+                size={14}
+                className={cn("transition-transform duration-200", isToolsOpen ? "rotate-180" : "")}
               />
             </button>
 
@@ -116,7 +104,7 @@ export default function Navbar() {
                   className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white/80 backdrop-blur-xl rounded-2xl shadow-xl border border-white/50 overflow-hidden p-2"
                 >
                   {toolsLinks.map((tool) => (
-                    <Link 
+                    <Link
                       key={tool.href}
                       href={tool.href}
                       className="flex items-center gap-3 p-3 rounded-xl hover:bg-stone-50 transition-colors group"
@@ -134,20 +122,10 @@ export default function Navbar() {
             </AnimatePresence>
           </div>
 
-          {/* Community */}
-          <Link 
-            href="/animunity" 
-            className={cn(
-              "text-sm font-bold transition-colors",
-              pathname === '/animunity' ? "text-blue-500" : "text-foreground hover:text-blue-500"
-            )}
-          >
-            Community
-          </Link>
         </div>
 
         {/* Mobile Menu Button */}
-        <button 
+        <button
           className="md:hidden p-2 text-foreground hover:bg-stone-100 rounded-lg transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
@@ -167,32 +145,14 @@ export default function Navbar() {
             <div className="px-6 py-6 space-y-6">
               {/* Main Links */}
               <div className="space-y-4">
-                <Link 
-                  href="/match" 
+                <Link
+                  href="/match"
                   className="flex items-center gap-3 text-lg font-bold text-foreground hover:text-primary transition-colors"
                 >
                   <div className="p-2 bg-primary/10 rounded-lg text-primary">
                     <Heart size={20} />
                   </div>
                   Find Soulmate
-                </Link>
-                <Link 
-                  href="/breeds" 
-                  className="flex items-center gap-3 text-lg font-bold text-foreground hover:text-blue-500 transition-colors"
-                >
-                  <div className="p-2 bg-blue-50 rounded-lg text-blue-500">
-                    <BookOpen size={20} />
-                  </div>
-                  Breeds
-                </Link>
-                <Link 
-                  href="/animunity" 
-                  className="flex items-center gap-3 text-lg font-bold text-foreground hover:text-blue-500 transition-colors"
-                >
-                  <div className="p-2 bg-blue-50 rounded-lg text-blue-500">
-                    <MessageCircleHeart size={20} />
-                  </div>
-                  Community
                 </Link>
               </div>
 
@@ -201,7 +161,7 @@ export default function Navbar() {
                 <p className="text-xs font-bold text-muted uppercase tracking-wider mb-4">Tools</p>
                 <div className="space-y-3 pl-2">
                   {toolsLinks.map((tool) => (
-                    <Link 
+                    <Link
                       key={tool.href}
                       href={tool.href}
                       className="flex items-center gap-3 text-base font-medium text-foreground hover:text-secondary transition-colors"
