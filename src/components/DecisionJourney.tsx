@@ -17,6 +17,10 @@ export default function DecisionJourney() {
 
   const currentNode = decisionTree[currentNodeId];
 
+  // Define which pet types have detailed breed segmentation
+  const SEGMENTED_PET_TYPES = ['Dog', 'Cat'];
+  const isSegmented = matchedOutcome ? SEGMENTED_PET_TYPES.includes(matchedOutcome) : false;
+
   // Animation Variants
   const variants = {
     enter: (direction: number) => ({
@@ -35,7 +39,7 @@ export default function DecisionJourney() {
 
   const handleOptionClick = (nextId?: string, outcome?: string) => {
     setDirection(1);
-    
+
     if (outcome) {
       // Leaf Node Reached
       setMatchedOutcome(outcome);
@@ -59,8 +63,19 @@ export default function DecisionJourney() {
   const handleContinue = () => {
     if (matchedOutcome) {
       setSelectedCategory(matchedOutcome);
-      router.push('/physical-filter');
+      // Only go to physical-filter for segmented types with breed data
+      if (isSegmented) {
+        router.push('/physical-filter');
+      }
+      // For non-segmented types, we don't navigate (user sees the message below)
     }
+  };
+
+  const handleStartOver = () => {
+    resetSession();
+    setMatchedOutcome(null);
+    setCurrentNodeId('root');
+    setHistory([]);
   };
 
   // ------------------------------------------------------------------
@@ -77,7 +92,7 @@ export default function DecisionJourney() {
         >
           {/* Decorative Background */}
           <div className="absolute top-0 left-0 w-full h-32 bg-secondary/10 -z-10 rounded-b-[50%]"></div>
-          
+
           <div className="bg-white inline-flex p-6 rounded-full shadow-sm mb-6 relative">
             <Sparkles className="absolute -top-2 -right-2 text-yellow-400 animate-pulse" size={24} />
             <span className="text-6xl">🎉</span>
@@ -95,21 +110,55 @@ export default function DecisionJourney() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleContinue}
-              className="w-full py-5 bg-secondary text-white text-xl font-bold rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#D9A588] transition-all flex items-center justify-center gap-2"
-            >
-              Customize My {matchedOutcome} <ArrowRight size={20} />
-            </motion.button>
+            {isSegmented ? (
+              <>
+                {/* Show customize button only for Dog and Cat */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleContinue}
+                  className="w-full py-5 bg-secondary text-white text-xl font-bold rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#D9A588] transition-all flex items-center justify-center gap-2"
+                >
+                  Customize My {matchedOutcome} <ArrowRight size={20} />
+                </motion.button>
 
-            <button
-              onClick={handleBack}
-              className="text-muted hover:text-foreground font-medium text-sm py-2 transition-colors flex items-center justify-center gap-1"
-            >
-              <RotateCcw size={14} /> Change my answers
-            </button>
+                <button
+                  onClick={handleBack}
+                  className="text-muted hover:text-foreground font-medium text-sm py-2 transition-colors flex items-center justify-center gap-1"
+                >
+                  <RotateCcw size={14} /> Change my answers
+                </button>
+              </>
+            ) : (
+              <>
+                {/* For unsegmented types, show informational message */}
+                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 mb-4">
+                  <p className="text-blue-800 font-medium mb-2">
+                    🐾 Great choice! {matchedOutcome}s make wonderful companions.
+                  </p>
+                  <p className="text-blue-600 text-sm">
+                    We're still building our detailed {matchedOutcome} breed database.
+                    Check back soon for personalized recommendations!
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <button
+                    onClick={handleStartOver}
+                    className="w-full py-4 bg-secondary text-white text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl hover:bg-[#D9A588] transition-all flex items-center justify-center gap-2"
+                  >
+                    <RotateCcw size={18} /> Try Another Pet Type
+                  </button>
+
+                  <button
+                    onClick={handleBack}
+                    className="text-muted hover:text-foreground font-medium text-sm py-2 transition-colors"
+                  >
+                    ← Go back
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </motion.div>
       </div>
@@ -124,17 +173,17 @@ export default function DecisionJourney() {
       {/* Progress Indicator (Decorative Paw) */}
       <div className="w-full max-w-xl mb-8 flex justify-center">
         <div className="relative w-24 h-2 bg-stone-200 rounded-full overflow-hidden">
-           <motion.div 
-             className="absolute top-0 left-0 h-full bg-primary"
-             initial={{ width: '10%' }}
-             animate={{ width: `${((history.length + 1) / 3) * 100}%` }} // Rough progress estimation
-             transition={{ duration: 0.5 }}
-           />
+          <motion.div
+            className="absolute top-0 left-0 h-full bg-primary"
+            initial={{ width: '10%' }}
+            animate={{ width: `${((history.length + 1) / 3) * 100}%` }} // Rough progress estimation
+            transition={{ duration: 0.5 }}
+          />
         </div>
-        <motion.div 
-           className="ml-2 text-primary"
-           animate={{ rotate: [0, 10, -10, 0] }}
-           transition={{ repeat: Infinity, duration: 2, repeatDelay: 3 }}
+        <motion.div
+          className="ml-2 text-primary"
+          animate={{ rotate: [0, 10, -10, 0] }}
+          transition={{ repeat: Infinity, duration: 2, repeatDelay: 3 }}
         >
           <PawPrint size={20} fill="currentColor" />
         </motion.div>
@@ -143,7 +192,7 @@ export default function DecisionJourney() {
       <div className="w-full max-w-xl bg-white rounded-[2.5rem] shadow-xl border border-stone-50 p-8 md:p-12 relative overflow-hidden">
         {/* Back Button */}
         {history.length > 0 && (
-          <button 
+          <button
             onClick={handleBack}
             className="absolute top-8 left-8 text-stone-400 hover:text-stone-600 transition-colors"
           >
@@ -171,8 +220,8 @@ export default function DecisionJourney() {
                 <motion.button
                   key={idx}
                   initial={{ backgroundColor: '#fafaf9', color: '#4A4A4A' }}
-                  whileHover={{ 
-                    backgroundColor: '#8DA399', 
+                  whileHover={{
+                    backgroundColor: '#8DA399',
                     color: '#ffffff',
                     scale: 1.02,
                     transition: { duration: 0.2, ease: "easeInOut" }
